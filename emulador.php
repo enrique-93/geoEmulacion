@@ -56,7 +56,7 @@
                 <br />
             </p>
             <div class="tabla">
-                <div class="tabla-fila">
+                <!--<div class="tabla-fila">
                     <div class="tabla-celda info">
                         <img src="img/flag.png" />
                         <input id="conductores" type="number" value="10" min="2" max="30" step="1" /> <i>Conductores</i>
@@ -72,7 +72,7 @@
                     <div class="tabla-celda info guardardatos">
                         Guardar Datos
                     </div>
-                </div>
+                </div>-->
             </div>
         </div>
     </div>
