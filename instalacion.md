@@ -9,4 +9,4 @@ Ejemplo: xamp/..../htdocs/geoEmulacion
 3.- Iniciar el servidor web en localhost (IMPORTANTE: debe ser en localhost, ya que
     por cuestiones de limite de uso, configuré la API de google para este subdomino)
     
-4.- Acceder a http://localhost:PUERTO/index.html desde un navegador web
+4.- Ver el archivo uso.md
