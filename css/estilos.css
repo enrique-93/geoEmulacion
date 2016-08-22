@@ -1,0 +1,292 @@
+@font-face {
+    font-family: "Neoteric Bold";
+    src: url(../fonts/NeotericBold.ttf);
+}
+
+@font-face {
+    font-family: "Neoteric Regular";
+    src: url(../fonts/NeotericRegular.ttf);
+}
+
+html,
+body {
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-family: "Neoteric Regular", "Neoteric Bold";
+    font-weight: bold;
+    overflow: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+h7 {
+    display: inline-block;
+    width: 100%;
+    margin: 0;
+}
+
+header {
+    background-color: #3367d6;
+    height: 10vh;
+    color: white;
+    text-transform: uppercase;
+    display: table;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.encabezado {
+    display: table-row;
+}
+
+.iniciarSimulacion{
+	text-decoration: none;
+	width: 250px;
+	display: inline-table;
+	border-radius: 4px;
+	cursor: pointer;
+	color: white;
+	min-height: 30px;
+	text-align: center;
+	vertical-align: middle;
+	border: 1px solid white;
+}
+
+.iniciarSimulacion a{
+	text-decoration: none;
+	color: white;
+}
+
+.iniciarSimulacion:hover{
+	color: #3367d6;
+	background-color: white;
+}
+
+.iniciarSimulacion:hover a{
+	color: #3367d6;
+}
+
+.inicio{
+	width: 300px;
+}
+
+#encabezado {
+    display: table-cell;
+    padding: 0 25px;
+    width: initial;
+    vertical-align: middle;
+}
+
+#mapa {
+    width: 100%;
+    height: 40vh;
+    border: 2px solid #3367d6;
+    box-sizing: border-box;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.area_simulacion {
+    width: 50%;
+    min-height: 50%;
+    padding-right: 10px;
+    box-sizing: border-box;
+    display: inline-block;
+    float: left;
+}
+
+.emulacion.area_simulacion.ancho{
+    width: 100%;
+}
+
+.emulacion.area_simulacion.maximizado{
+    width: 100%;
+    min-height: 70%;
+}
+
+.emulacion.area_simulacion.maximizado #mapa{
+    height: 80vh;
+} 
+
+.area_configuracion {
+    width: 50%;
+    min-height: 50%;
+    padding-left: 10px;
+    box-sizing: border-box;
+    display: inline-block;
+    float: left;
+}
+
+.container {
+    width: 100%;
+    height: 90vh;
+    padding: 20px;
+    overflow: auto;
+    box-sizing: border-box;
+    margin-top: 10vh;
+}
+
+p.instrucciones {
+    margin-top: 0;
+}
+
+.tabla {
+    display: table;
+    width: 100%;
+}
+
+.tabla-fila {
+    display: table-row;
+}
+
+.tabla-celda {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.loading {
+    width: 124px;
+    padding: 0 5px;
+}
+
+.tright {
+    text-align: right;
+}
+
+img.loading {
+    width: 40px;
+}
+
+.mapa_info {
+    margin-top: 16px;
+}
+
+.invisible {
+    display: none;
+}
+
+.errortexto {
+    color: #d65133;
+    text-align: right;
+}
+
+.mapaguardar,.changeSize {
+    text-align: right;
+}
+
+.guardar,.guardardatos {
+    width: 250px;
+    height: 30px;
+    line-height: 30px;
+    vertical-align: middle;
+    text-align: center;
+    display: inline-block;
+    background-color: #3367d6;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+}
+
+.boton{
+    width: 150px;
+    height: 30px;
+    line-height: 30px;
+    vertical-align: middle;
+    text-align: center;
+    display: inline-block;
+    background-color: #3367d6;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+}
+
+.boton{
+    background-image: url(../img/max.png);
+    transition: all .5s;
+    background-position: 100% 50%;
+    background-repeat: no-repeat;
+    -ms-transition: all .5s;
+    -moz-transition: all .5s;
+    -webkit-transition: all .5s;
+}
+
+.maximizado .boton{
+    background-image: url(../img/min.png);
+}
+
+.guardardatos{
+	margin-top: 16px;
+	display: inline-table;
+}
+
+
+.guardar:hover,.guardardatos:hover {
+    background-color: #4285f4;
+}
+
+.info{
+	text-align: center;
+}
+
+.info i{
+	width: 100px;
+	display: inline-table;
+}
+
+.center{
+	text-align: center;
+}
+
+.icon{
+	text-align: right;
+}
+
+.icon img{
+	max-width: 100%;
+}
+
+.area_configuracion h2{
+	text-align: center;
+}
+
+@media all and (max-width: 800px) {
+	header h1{
+		font-size: 20px;
+	}
+
+	.inicio{
+		width: 50%;
+	}
+
+	.iniciarSimulacion{
+		width: 83.33333%
+	}
+
+    body {
+        font-size: 13px;
+    }
+    .area_configuracion,
+    .area_simulacion {
+        width: 100%;
+    }
+
+    .area_configuracion{
+    	margin-top: 16px;
+    	height: initial;
+    	min-height: initial;
+    }
+}
+
+@media all and (max-height: 600px) {
+    #mapa {
+        height: 80vh;
+    }
+}
