@@ -9,11 +9,12 @@
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/mapaSimulacion.js"></script>
     <!---->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAUumuN3izJOT09CfqIUovuYPVgym61W4M&libraries=places&signed_in=true&callback=iniciarMapa"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAUumuN3izJOT09CfqIUovuYPVgym61W4M&signed_in=true&sensor=false&callback=iniciarMapa"></script>
+
     <!---->
 </head>
 
-<body>
+<body class="emular">
     <header>
         <div class="encabezado">
             <h1 id="encabezado">
@@ -55,24 +56,39 @@
             <p class="instrucciones">
                 <br />
             </p>
-            <div class="tabla">
-                <!--<div class="tabla-fila">
-                    <div class="tabla-celda info">
-                        <img src="img/flag.png" />
-                        <input id="conductores" type="number" value="10" min="2" max="30" step="1" /> <i>Conductores</i>
+            <div class="tabla relacion">
+                <div id="$id" class="tabla-fila titulado">
+                    <div class="tabla-celda userinfo">
+                        Conductor
+                    </div>
+                    <div class="tabla-celda userinfo">
+                        Usuario mas cercano
+                    </div>
+                    <div class="tabla-celda distanciainfo">
+                        Distancia en metros
+                    </div>
+                    <div class="tabla-celda tiempoinfo">
+                        Tiempo en segundos
                     </div>
                 </div>
-                <div class="tabla-fila">
-                    <div class="tabla-celda info">
-                        <img src="img/flag_user.png" />
-                        <input id="usuarios" type="number" value="5" min="2" max="30" step="1" /> <i>Usuarios</i>
+                <div class="invisible">
+                    <div id="_$id" rel="$id" class="tabla-fila">
+                        <div class="tabla-celda userinfo">
+                            <img src="$srcC" /><br/>
+                            $nombreC
+                        </div>
+                        <div class="tabla-celda userinfo">
+                            <img src="$srcUser" /><br/>
+                            $nombreUser
+                        </div>
+                        <div class="tabla-celda distanciainfo">
+                            $distancia
+                        </div>
+                        <div class="tabla-celda tiempoinfo">
+                            $tiempo
+                        </div>
                     </div>
                 </div>
-                <div class="tabla-fila center">
-                    <div class="tabla-celda info guardardatos">
-                        Guardar Datos
-                    </div>
-                </div>-->
             </div>
         </div>
     </div>

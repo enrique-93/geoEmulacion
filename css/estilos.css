@@ -257,6 +257,33 @@ img.loading {
 	text-align: center;
 }
 
+.tabla.relacion .tabla-celda{
+    width: 25%;
+    padding: 0 3px;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #4285f4;
+}
+
+.tabla-fila:not(.titulado) .distanciainfo,.tabla-fila:not(.titulado) .tiempoinfo{
+    font-family: Arial;
+}
+
+.tabla.relacion .tabla-fila:not(.titulado){
+    cursor: pointer;
+}
+
+.tabla.relacion .tabla-fila:not(.titulado):hover{
+    background-color: #4285f4;
+    color: white;
+}
+
+.tabla.relacion img{
+    border-radius: 50%;
+    border: 2px solid #4285f4;
+    box-sizing: border-box;
+}
+
 @media all and (max-width: 800px) {
 	header h1{
 		font-size: 20px;
@@ -278,15 +305,29 @@ img.loading {
         width: 100%;
     }
 
-    .area_configuracion{
-    	margin-top: 16px;
-    	height: initial;
-    	min-height: initial;
+    .area_simulacion.emulacion #mapa {
+        /*height: 80vh;*/
     }
+
+    .area_simulacion.emulacion .boton{
+        display: none;
+    }
+
+    
 }
 
 @media all and (max-height: 600px) {
     #mapa {
         height: 80vh;
     }
+
+    .area_simulacion .boton{
+        display: none;
+    }
+    
+}
+
+.emular .area_configuracion{
+    min-height: initial;
+    width: 100%;
 }
