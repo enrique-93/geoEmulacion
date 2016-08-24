@@ -234,16 +234,16 @@ function setMarkers(map) {
 
     var image_user = {
         url: 'img/flag_user.png',
-        size: new google.maps.Size(38, 64),
+        size: new google.maps.Size(32, 32),
         origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(19, 64)
+        anchor: new google.maps.Point(16, 32)
     };
 
     var image_conductor = {
         url: 'img/flag.png',
-        size: new google.maps.Size(38, 64),
+        size: new google.maps.Size(32, 32),
         origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(19, 64)
+        anchor: new google.maps.Point(16, 32)
     };
 
 

@@ -74,8 +74,10 @@
                 <div class="invisible">
                     <div id="_$id" rel="$id" class="tabla-fila">
                         <div class="tabla-celda userinfo">
+                            <div class="rutainfo"></div>
                             <img src="$srcC" /><br/>
                             $nombreC
+
                         </div>
                         <div class="tabla-celda userinfo">
                             <img src="$srcUser" /><br/>

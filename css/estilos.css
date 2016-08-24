@@ -284,6 +284,30 @@ img.loading {
     box-sizing: border-box;
 }
 
+.userinfo{
+    position: relative;
+}
+
+.rutainfo{
+    width: 100%;
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    border: 2px solid black;
+    height: 10px;
+    z-index: 0;
+    transform: translate(0,-40%);
+    -ms-transform: translate(0,-40%);
+    -moz-transform: translate(0,-40%);
+    -webkit-transform: translate(0,-40%);
+}
+
+.userinfo img{
+    position: relative;
+    z-index: 1;
+}
+
+
 @media all and (max-width: 800px) {
 	header h1{
 		font-size: 20px;

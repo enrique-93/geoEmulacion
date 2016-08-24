@@ -86,7 +86,7 @@ function configurarMapa() {
     config.lugares = shuffle(config.lugares);
 
     $.ajax({
-        url: 'https://randomuser.me/api/?results='+(config.usuarios+config.conductores),
+        url: 'https://randomuser.me/api/?results='+(config.usuarios+config.conductores)+'&nat=es',
         dataType: 'json',
         success: function(data) {
             gente = data;
@@ -146,12 +146,16 @@ function drawPaths() {
     var origenes = [];
     var destinos = [];
 
+
+
     for(var i=0;i<Math.max(conductores.length,usuarios.length);i++){
         if(i<conductores.length)
             origenes.push(conductores[i].getPosition())
         if(i<usuarios.length)
             destinos.push(usuarios[i].getPosition());
     }
+
+
 
     mServ.getDistanceMatrix({
         origins: origenes,
@@ -163,16 +167,14 @@ function drawPaths() {
         var texto = $('.relacion .invisible').html();
 
         for(var a in res.rows){
-            console.log(res.rows[a])
             var conductor=dataObjetos.conductores[a],
                 row = res.rows[a].elements,
                 min = Infinity,
                 pos = -1;
 
             for(var b in row){
-                console.log(row[b])
                 if(row[b].duration.value<min){
-                    min = row[b];
+                    min = row[b].duration.value;
                     pos = b;
                 }
             }
@@ -190,11 +192,18 @@ function drawPaths() {
                     .replace(/\$tiempo/gi,conductor.viaje.duration.value)
                 );
 
+            $('.relacion .tabla-fila[rel='+a+'] .rutainfo').css('background-color',conductor.color);
+
             encontrarRutaConductor(conductor,a);
         }
 
         
-    })
+        
+    });
+
+    for(var e in usuarios){
+            encontrarRutaUsuario(dataObjetos.usuarios[e],e);
+        }
 }
 
 function encontrarRutaConductor(conductor,i){
@@ -215,21 +224,107 @@ function encontrarRutaConductor(conductor,i){
             strokeWeight: 10+(Math.random()*10)-5
         });
 
-        console.log(result)
-        conductor.ruta = new google.maps.DirectionsRenderer(/*{polylineOptions: polylineOptionsActual}*/);
-        console.log(conductor.ruta)
-        conductor.ruta.setMap(mapa);
-        conductor.ruta.setDirections(result);
-        /*function moveToStep(yourmarker,yourroute,c) {
-            if (c>=0) {
-                yourmarker.setLatLng(yourroute.getStep(c).getLatLng());
-                window.setTimeout(function(){
-                    moveToStep(yourmarker,yourroute,c-1);
-                },500);
+        conductor.ruta = obtenerPuntos(result,0).reverse();
+        conductor.rutaCliente = obtenerPuntos(result,1);
+
+        conductor.rutaCliente.unshift(conductor.marcador.getPosition());
+        conductor.rutaCliente.push(usuarios[conductor.usuario].getPosition());
+
+        conductor.ruta.unshift(conductor.marcador.getPosition());
+        conductor.ruta.push(conductor.destino);
+
+        conductor.rastro = [];
+
+        conductor.lineaCliente = new google.maps.Polyline({
+            path:conductor.rutaCliente,
+            geodesic: true,
+            strokeColor: conductor.color,
+            strokeOpacity: .8,
+            strokeWeight: 10+(Math.random()*4)-2
+        });
+
+        conductor.linea = new google.maps.Polyline({
+            path:conductor.rastro,
+            geodesic: true,
+            strokeColor: conductor.color,
+            strokeOpacity: .8,
+            strokeWeight: 10+(Math.random()*4)-2
+        });
+
+
+        conductor.lineaCliente.setMap(mapa);
+        conductor.linea.setMap(mapa);
+    });
+
+}
+
+function encontrarRutaUsuario(usuario,i){
+    dServ.route({
+        origin: usuario.marcador.getPosition(),
+        destination: usuario.destino,
+        travelMode: google.maps.TravelMode.WALKING,
+        avoidHighways: true,
+        waypoints : usuario.destinos
+    },function(result){
+
+        var polylineOptionsActual = new google.maps.Polyline({
+            strokeColor: usuario.color,
+            strokeOpacity: .8,
+            strokeWeight: 10+(Math.random()*10)-5
+        });
+
+        usuario.ruta = [];
+        if(!result.routes[0])
+            console.log(result);
+        else{
+            for(var a in result.routes[0].leg){
+                usuario.ruta.join()+','+obtenerPuntos(result,a);
             }
         }
-        moveToStep(conductor.marcador,conductor.ruta,conductor.ruta.getNumSteps())*/
-    })
+
+        //usuario.ruta.unshift(usuario.marcador.getPosition());
+        //usuario.ruta.push(usuario.destino);
+        usuario.rastro = [];
+
+
+        usuario.linea = new google.maps.Polyline({
+            path : usuario.ruta,
+            geodesic: true,
+            strokeColor: usuario.color,
+            //strokeOpacity: .4,
+            //strokeWeight: 7+(Math.random()*4)-2,
+            icons: [{
+              icon: lineSymbol = {
+                  path: 'M 0,-1 0,1',
+                  strokeOpacity: .4,
+                  scale: 4
+                },
+              offset: '0',
+              repeat: '20px'
+            }]
+        });
+
+        usuario.linea.setMap(mapa);
+    });
+}
+
+function obtenerPuntos(direccion,leg,close){
+    var dir = {}
+    var direcciones = [];
+    for(var a in direccion.routes[0].legs[leg].steps){
+      var step = direccion.routes[0].legs[leg].steps;
+      for(var i in step){
+        for(var t in step[i].lat_lngs){
+         var pos = step[i].lat_lngs[t];
+         if(dir[pos.lat()+'_'+pos.lng()]&&!close)
+            continue;
+         dir[pos.lat()+'_'+pos.lng()] = 1
+         direcciones.push(pos)
+        }
+      }
+    }
+
+    return direcciones;
 }
 
 function setMarkers(map) {
@@ -238,16 +333,16 @@ function setMarkers(map) {
 
     var image_user = {
         url: 'img/flag_user.png',
-        size: new google.maps.Size(38, 64),
+        size: new google.maps.Size(32, 32),
         origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(19, 64)
+        anchor: new google.maps.Point(16, 32)
     };
 
     var image_conductor = {
         url: 'img/flag.png',
-        size: new google.maps.Size(38, 64),
+        size: new google.maps.Size(32, 32),
         origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(19, 64)
+        anchor: new google.maps.Point(16, 32)
     };
 
 
@@ -287,6 +382,37 @@ function setMarkers(map) {
         if (i < config.usuarios) {
             usuarios.push(marker);
             dataObjetos.usuarios[i] = data;
+
+            
+            data.destinos = [];
+
+            var selected={};
+
+            selected[marcador.geometry.location.lat+'_'+marcador.geometry.location.lng] = 1;
+
+            for(var a=0; a<9;a++){
+                var todj = config.lugares[Math.floor(Math.random()*config.lugares.length)];
+                while(selected[todj.geometry.location.lat+'_'+todj.geometry.location.lng]){
+                     todj = config.lugares[Math.floor(Math.random()*config.lugares.length)];
+                }
+
+                selected[todj.geometry.location.lat+'_'+todj.geometry.location.lng] = 1;
+
+                if(a<8){
+                    data.destinos.push({
+                        location:{
+                            lat: todj.geometry.location.lat,
+                            lng: todj.geometry.location.lng
+                        },
+                        stopover: false
+                    });
+                }else{
+                    data.destino = {
+                        lat: todj.geometry.location.lat,
+                        lng: todj.geometry.location.lng
+                    }
+                }
+            }
         } else {
             conductores.push(marker);
             dataObjetos.conductores[i-config.usuarios] = data;
