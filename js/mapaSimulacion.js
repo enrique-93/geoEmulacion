@@ -86,7 +86,7 @@ function configurarMapa() {
     config.lugares = shuffle(config.lugares);
 
     $.ajax({
-        url: 'https://randomuser.me/api/?results='+(config.usuarios+config.conductores)+'&nat=es',
+        url: 'https://randomuser.me/api/?results=' + (config.usuarios + config.conductores) + '&nat=es',
         dataType: 'json',
         success: function(data) {
             gente = data;
@@ -94,7 +94,7 @@ function configurarMapa() {
             drawPaths();
         }
     });
-    
+
 
 }
 
@@ -148,10 +148,10 @@ function drawPaths() {
 
 
 
-    for(var i=0;i<Math.max(conductores.length,usuarios.length);i++){
-        if(i<conductores.length)
+    for (var i = 0; i < Math.max(conductores.length, usuarios.length); i++) {
+        if (i < conductores.length)
             origenes.push(conductores[i].getPosition())
-        if(i<usuarios.length)
+        if (i < usuarios.length)
             destinos.push(usuarios[i].getPosition());
     }
 
@@ -161,19 +161,20 @@ function drawPaths() {
         origins: origenes,
         destinations: destinos,
         travelMode: google.maps.TravelMode.WALKING,
+        avoidTolls: true,
         avoidHighways: true
     }, function(res, status) {
 
         var texto = $('.relacion .invisible').html();
 
-        for(var a in res.rows){
-            var conductor=dataObjetos.conductores[a],
+        for (var a in res.rows) {
+            var conductor = dataObjetos.conductores[a],
                 row = res.rows[a].elements,
                 min = Infinity,
                 pos = -1;
 
-            for(var b in row){
-                if(row[b].duration.value<min){
+            for (var b in row) {
+                if (row[b].duration.value < min) {
                     min = row[b].duration.value;
                     pos = b;
                 }
@@ -183,49 +184,50 @@ function drawPaths() {
             conductor.usuario = pos;
 
             $('.relacion').append(
-                texto.replace(/\$id/gi,a)
-                    .replace(/\$srcC/,conductor.info.picture.medium)
-                    .replace(/\$srcUser/gi,dataObjetos.usuarios[pos].info.picture.medium)
-                    .replace(/\$nombreC/g,conductor.info.name.first+' '+conductor.info.name.last)
-                    .replace(/\$nombreUser/gi,dataObjetos.usuarios[pos].info.name.first+' '+dataObjetos.usuarios[pos].info.name.last)
-                    .replace(/\$distancia/gi,conductor.viaje.distance.value)
-                    .replace(/\$tiempo/gi,conductor.viaje.duration.value)
-                );
+                texto.replace(/\$id/gi, a)
+                .replace(/\$srcC/, conductor.info.picture.medium)
+                .replace(/\$srcUser/gi, dataObjetos.usuarios[pos].info.picture.medium)
+                .replace(/\$nombreC/g, conductor.info.name.first + ' ' + conductor.info.name.last)
+                .replace(/\$nombreUser/gi, dataObjetos.usuarios[pos].info.name.first + ' ' + dataObjetos.usuarios[pos].info.name.last)
+                .replace(/\$distancia/gi, conductor.viaje.distance.value)
+                .replace(/\$tiempo/gi, conductor.viaje.duration.value)
+            );
 
-            $('.relacion .tabla-fila[rel='+a+'] .rutainfo').css('background-color',conductor.color);
+            $('.relacion .tabla-fila[rel=' + a + '] .rutainfo').css('background-color', conductor.color);
 
-            encontrarRutaConductor(conductor,a);
+            encontrarRutaConductor(conductor, a);
         }
 
-        
-        
+
+
     });
 
-    for(var e in usuarios){
-            encontrarRutaUsuario(dataObjetos.usuarios[e],e);
-        }
+    for (var e in usuarios) {
+        encontrarRutaUsuario(dataObjetos.usuarios[e], e);
+    }
 }
 
-function encontrarRutaConductor(conductor,i){
+function encontrarRutaConductor(conductor, i) {
     dServ.route({
         origin: conductor.destino,
         destination: usuarios[conductor.usuario].getPosition(),
         travelMode: google.maps.TravelMode.WALKING,
+        avoidTolls: true,
         avoidHighways: true,
-        waypoints:[{
+        waypoints: [{
             location: conductor.marcador.getPosition(),
             stopover: true
         }]
-    },function(result){
+    }, function(result) {
 
         var polylineOptionsActual = new google.maps.Polyline({
             strokeColor: conductor.color,
             strokeOpacity: .8,
-            strokeWeight: 10+(Math.random()*10)-5
+            strokeWeight: 10 + (Math.random() * 10) - 5
         });
 
-        conductor.ruta = obtenerPuntos(result,0).reverse();
-        conductor.rutaCliente = obtenerPuntos(result,1);
+        conductor.ruta = getParts(result, 0).reverse();
+        conductor.rutaCliente = getParts(result, 1);
 
         conductor.rutaCliente.unshift(conductor.marcador.getPosition());
         conductor.rutaCliente.push(usuarios[conductor.usuario].getPosition());
@@ -236,19 +238,19 @@ function encontrarRutaConductor(conductor,i){
         conductor.rastro = [];
 
         conductor.lineaCliente = new google.maps.Polyline({
-            path:conductor.rutaCliente,
+            path: conductor.rutaCliente,
             geodesic: true,
             strokeColor: conductor.color,
             strokeOpacity: .8,
-            strokeWeight: 10+(Math.random()*4)-2
+            strokeWeight: 10 + (Math.random() * 4) - 2
         });
 
         conductor.linea = new google.maps.Polyline({
-            path:conductor.rastro,
+            path: conductor.rastro,
             geodesic: true,
             strokeColor: conductor.color,
             strokeOpacity: .8,
-            strokeWeight: 10+(Math.random()*4)-2
+            strokeWeight: 10 + (Math.random() * 4) - 2
         });
 
 
@@ -258,29 +260,28 @@ function encontrarRutaConductor(conductor,i){
 
 }
 
-function encontrarRutaUsuario(usuario,i){
+function encontrarRutaUsuario(usuario, i) {
     dServ.route({
         origin: usuario.marcador.getPosition(),
         destination: usuario.destino,
         travelMode: google.maps.TravelMode.WALKING,
+        avoidTolls: true,
         avoidHighways: true,
-        waypoints : usuario.destinos
-    },function(result){
+        optimizeWaypoints: true,
+        waypoints: usuario.destinos
+    }, function(result) {
 
-        var polylineOptionsActual = new google.maps.Polyline({
-            strokeColor: usuario.color,
-            strokeOpacity: .8,
-            strokeWeight: 10+(Math.random()*10)-5
-        });
+        console.log(usuario.marcador.getPosition(), usuario.destino, result);
+
 
         usuario.ruta = [];
-        if(!result.routes[0])
+        if (!result.routes[0])
             console.log(result);
-        else{
-            for(var a in result.routes[0].leg){
-                usuario.ruta.join()+','+obtenerPuntos(result,a);
-            }
+        else {
+            usuario.ruta = getParts(result, -1, false)
         }
+
+        usuario.ruta.splice(0, 1);
 
         //usuario.ruta.unshift(usuario.marcador.getPosition());
         //usuario.ruta.push(usuario.destino);
@@ -288,19 +289,19 @@ function encontrarRutaUsuario(usuario,i){
 
 
         usuario.linea = new google.maps.Polyline({
-            path : usuario.ruta,
+            path: usuario.ruta,
             geodesic: true,
             strokeColor: usuario.color,
             //strokeOpacity: .4,
             //strokeWeight: 7+(Math.random()*4)-2,
             icons: [{
-              icon: lineSymbol = {
-                  path: 'M 0,-1 0,1',
-                  strokeOpacity: .4,
-                  scale: 4
+                icon: lineSymbol = {
+                    path: 'M 0,-1 0,1',
+                    strokeOpacity: .4,
+                    scale: 4
                 },
-              offset: '0',
-              repeat: '20px'
+                offset: '0',
+                repeat: '20px'
             }]
         });
 
@@ -308,23 +309,34 @@ function encontrarRutaUsuario(usuario,i){
     });
 }
 
-function obtenerPuntos(direccion,leg,close){
+function getParts(googleWay, legNum, close) {
     var dir = {}
-    var direcciones = [];
-    for(var a in direccion.routes[0].legs[leg].steps){
-      var step = direccion.routes[0].legs[leg].steps;
-      for(var i in step){
-        for(var t in step[i].lat_lngs){
-         var pos = step[i].lat_lngs[t];
-         if(dir[pos.lat()+'_'+pos.lng()]&&!close)
-            continue;
-         dir[pos.lat()+'_'+pos.lng()] = 1
-         direcciones.push(pos)
-        }
-      }
+    var parts = [];
+
+    var start = legNum;
+    var end = legNum + 1;
+
+    if (legNum < 0) {
+        start = 0;
+        end = googleWay.routes[0].legs.length
     }
 
-    return direcciones;
+    for (var leg = start; leg < end; leg++) {
+        for (var a in googleWay.routes[0].legs[leg].steps) {
+            var step = googleWay.routes[0].legs[leg].steps;
+            for (var i in step) {
+                for (var t in step[i].lat_lngs) {
+                    var pos = step[i].lat_lngs[t];
+                    if (dir[pos.lat() + '_' + pos.lng()] && !close)
+                        continue;
+                    dir[pos.lat() + '_' + pos.lng()] = 1
+                    parts.push(pos)
+                }
+            }
+        }
+    }
+
+    return parts;
 }
 
 function setMarkers(map) {
@@ -370,7 +382,7 @@ function setMarkers(map) {
             info: gente.results[i]
         };
 
-        while(data.destino == marcador) {
+        while (data.destino == marcador) {
             data.destino = config.lugares[Math.floor(Math.random() * config.lugares.length)]
         }
 
@@ -383,30 +395,30 @@ function setMarkers(map) {
             usuarios.push(marker);
             dataObjetos.usuarios[i] = data;
 
-            
+
             data.destinos = [];
 
-            var selected={};
+            var selected = {};
 
-            selected[marcador.geometry.location.lat+'_'+marcador.geometry.location.lng] = 1;
+            selected[marcador.geometry.location.lat + '_' + marcador.geometry.location.lng] = 1;
 
-            for(var a=0; a<9;a++){
-                var todj = config.lugares[Math.floor(Math.random()*config.lugares.length)];
-                while(selected[todj.geometry.location.lat+'_'+todj.geometry.location.lng]){
-                     todj = config.lugares[Math.floor(Math.random()*config.lugares.length)];
+            for (var a = 0; a < 4; a++) {
+                var todj = config.lugares[Math.floor(Math.random() * config.lugares.length)];
+                while (selected[todj.geometry.location.lat + '_' + todj.geometry.location.lng]) {
+                    todj = config.lugares[Math.floor(Math.random() * config.lugares.length)];
                 }
 
-                selected[todj.geometry.location.lat+'_'+todj.geometry.location.lng] = 1;
+                selected[todj.geometry.location.lat + '_' + todj.geometry.location.lng] = 1;
 
-                if(a<8){
+                if (a < 3) {
                     data.destinos.push({
-                        location:{
+                        location: {
                             lat: todj.geometry.location.lat,
                             lng: todj.geometry.location.lng
                         },
                         stopover: false
                     });
-                }else{
+                } else {
                     data.destino = {
                         lat: todj.geometry.location.lat,
                         lng: todj.geometry.location.lng
@@ -415,7 +427,7 @@ function setMarkers(map) {
             }
         } else {
             conductores.push(marker);
-            dataObjetos.conductores[i-config.usuarios] = data;
+            dataObjetos.conductores[i - config.usuarios] = data;
         }
 
         bounds.extend(marker.getPosition());
@@ -426,6 +438,129 @@ function setMarkers(map) {
     //map.fitBounds(bounds);
 }
 
+var noUser = {
+    name: {
+        first: 'desconocido',
+        last: 'x'
+    },
+    picture: {
+        medium: 'img/nouser.png'
+    }
+}
+
 function rand255() {
     return Math.round(Math.random() * 255);
 }
+
+var User = function(webInfo, inicio, map) {
+
+    webInfo || (webInfo = {});
+
+    webInfo = $.extend(true, noUser, webInfo);
+
+    this.name = webInfo.name.first + webInfo.name.last;
+    this.picture = webInfo.picture.medium;
+    this.color = 'rgb(' + rand255() + ',' + rand255() + ',' + rand255() + ')';
+    this.origen = inicio;
+    that.map = map;
+    that.way = []:
+
+        this.marcador = new google.maps.Marker({
+            position: inicio,
+            map: map,
+            icon: image_user,
+            title: this.name
+        });
+
+    this.createWaypoints = function(n) {
+        var destinos = [];
+
+        n || (n = 3);
+
+        var selected = {};
+
+        selected[this.marcador.geometry.location.lat + '_' + this.marcador.geometry.location.lng] = 1;
+
+        for (var a = 0; a < 4; a++) {
+            var todj = config.lugares[Math.floor(Math.random() * config.lugares.length)];
+            while (selected[todj.geometry.location.lat + '_' + todj.geometry.location.lng]) {
+                todj = config.lugares[Math.floor(Math.random() * config.lugares.length)];
+            }
+
+            selected[todj.geometry.location.lat + '_' + todj.geometry.location.lng] = 1;
+
+            if (a < n) {
+                destinos.push({
+                    location: {
+                        lat: todj.geometry.location.lat,
+                        lng: todj.geometry.location.lng
+                    },
+                    stopover: false
+                });
+            } else {
+                this.destino = {
+                    lat: todj.geometry.location.lat,
+                    lng: todj.geometry.location.lng
+                }
+            }
+        }
+
+        this.destinos = destinos;
+    }
+
+    this.findWay = function(origin, cback, n) {
+
+        var that = this;
+
+        n || (n = 1);
+        origin || (origin = this.marcador.getPosition());
+
+        dServ.route({
+            origin: origin,
+            destination: this.destino,
+            travelMode: google.maps.TravelMode.WALKING,
+            avoidTolls: true,
+            avoidHighways: true,
+            optimizeWaypoints: true,
+            waypoints: this.destinos
+        }, function(result) {
+
+            var way = [];
+
+            if (!result.routes[0]) {
+                if (n < 3) {
+                    return setTimeout(function() {
+                        that.findWay(cback, ++n);
+                    }, 1000);
+                }
+            } else {
+                way = getParts(result, -1, false)
+            }
+
+            if (cback && typeof cback == 'function')
+                return cback(way);
+        });
+    }
+
+    this.drawLine = function() {
+        that.line || (that.line = new google.maps.Polyline({
+            path: usuario.ruta,
+            geodesic: true,
+            strokeColor: usuario.color
+        }));
+
+        that.line.setMap(that.map);
+    }
+
+}
+
+var data = {
+    marcador: marker,
+    rutaCliente: null,
+    ruta: null,
+    color: 'rgb(' + rand255() + ',' + rand255() + ',' + rand255() + ')',
+    tiempo: 0,
+    destino: marcador,
+    cliente: null,
+    info: gente.results[i]
+};
