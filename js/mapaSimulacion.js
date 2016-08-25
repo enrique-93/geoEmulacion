@@ -463,7 +463,7 @@ var User = function(webInfo, inicio, map) {
     this.color = 'rgb(' + rand255() + ',' + rand255() + ',' + rand255() + ')';
     this.origen = inicio;
     that.map = map;
-    that.way = []:
+    that.way = [];
 
         this.marcador = new google.maps.Marker({
             position: inicio,
@@ -553,14 +553,3 @@ var User = function(webInfo, inicio, map) {
     }
 
 }
-
-var data = {
-    marcador: marker,
-    rutaCliente: null,
-    ruta: null,
-    color: 'rgb(' + rand255() + ',' + rand255() + ',' + rand255() + ')',
-    tiempo: 0,
-    destino: marcador,
-    cliente: null,
-    info: gente.results[i]
-};
