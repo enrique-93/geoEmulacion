@@ -302,11 +302,33 @@ img.loading {
     -webkit-transform: translate(0,-40%);
 }
 
+.infomapa{
+    font-size: 24px;
+    text-align: center;
+    font-family: Neoteric Regular;
+    overflow: hidden;
+}
+
+.infomapa *{
+    display: inline-block;
+    float: left;
+}
+
+.infomapa h3{
+    width: 300px;
+}
+
 .userinfo img{
     position: relative;
     z-index: 1;
 }
 
+.instrucciones.barra{
+    display: inline-block;
+    margin: 0 0;
+    height: 15px;
+    background-color: #4285f4;
+}
 
 @media all and (max-width: 800px) {
 	header h1{

@@ -53,7 +53,8 @@
             <h2>
             Conductores
           </h2>
-            <p class="instrucciones">
+
+            <p class="instrucciones barra">
                 <br />
             </p>
             <div class="tabla relacion">
