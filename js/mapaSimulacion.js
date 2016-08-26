@@ -577,7 +577,7 @@ var sistema = {
     },
     time: 0,
     playing: false,
-    speed: 32,
+    speed: 16,
     togglePlay: function(){
         if(sistema.playing){
             sistema.playing = false;
