@@ -111,8 +111,10 @@ function configurarMapa() {
         success: function(data) {
             people = data;
             setMarkers(mapa);
-            sistema.connectDriversAndUsers(true);
-            sistema.init();
+            sistema.connectDriversAndUsers(true,function(){
+                sistema.playing = true;
+                sistema.init();
+            });
         }
     });
 
@@ -497,7 +499,7 @@ var Driver = function(webInfo, start, map) {
 }
 
 var sistema = {
-    connectDriversAndUsers: function(initialize) {
+    connectDriversAndUsers: function(initialize,cback) {
 
         var origenes = [];
         var destinations = [];
@@ -566,10 +568,14 @@ var sistema = {
                     (function(driver) {
                         driver.findWay(driver.marker.getPosition(), function() {
                             driver.drawLine();
+                            if( cback && typeof cback =='function')
+                                cback();
                         });
                     })(driver);
                 } else {
                     driver.findWay(driver.marker.getPosition());
+                    if( cback && typeof cback =='function')
+                        cback();
                 }
 
             }
